@@ -1,0 +1,189 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Minesweeper</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="sidebar">
+    <div class="sidebar-content">
+        <div class="sidebar-header">
+            <span id="control-panel-title">Control Panel</span>
+            <div class="collapse-handle" onclick="toggle_sidebar()">◀</div>
+        </div>
+
+        <div class="controls">
+            <div class="sidebar-button info-box">
+                <div class="info-title">Information</div>
+                <div class="info-line">
+                    <span class="info-label">Status</span>
+                    <span id="status-info" class="info-value">In Progress</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Time</span>
+                    <span id="time-info" class="info-value">0.0 s</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Size</span>
+                    <span id="board-info" class="info-value">16 × 30 / Mines 99</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Density</span>
+                    <span id="density-info" class="info-value">20.63%</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Solvability</span>
+                    <span id="solvability-info" class="info-value">false</span>
+                </div>
+            </div>
+
+            <div class="sidebar-button">
+                <button class="button" onclick="start_game()">Restart</button>
+            </div>
+
+            <div class="sidebar-button dropdown">
+                <button class="button" onclick="toggle_difficulty_dropdown()">Difficulty</button>
+                <div id="difficulty-menu" class="dropdown-menu">
+                    <div onclick="select_difficulty('low')">Low</div>
+                    <div onclick="select_difficulty('medium')">Medium</div>
+                    <div onclick="select_difficulty('high')">High</div>
+                    <div onclick="select_difficulty('fullscreen')">Fullscreen</div>
+                </div>
+            </div>
+
+            <div class="sidebar-button dropdown">
+                <button class="button" onclick="toggle_background_dropdown()">Background</button>
+                <div id="background-menu" class="dropdown-menu">
+                    <div onclick="select_background('background_default.jpg')">Default</div>
+                    <div onclick="select_background('01.jpg')">01</div>
+                    <div onclick="select_background('02.jpg')">02</div>
+                    <div onclick="select_background('03.jpg')">03</div>
+                    <div onclick="select_background('04.jpg')">04</div>
+                    <div onclick="select_background('05.jpg')">05</div>
+                </div>
+            </div>
+
+            <div class="sidebar-button">
+                <button class="button" onclick="solve()">Solve</button>
+            </div>
+
+            <div class="sidebar-button">
+                <button class="button" onclick="solve_all()">Solve All</button>
+            </div>
+
+            <div class="sidebar-button">
+                <button class="button" onclick="toggle_guide()">Guide</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="expand-button" onclick="toggle_sidebar()">▶</div>
+
+<div class="main-content">
+    <div class="header">
+        <h1>Minesweeper</h1>
+    </div>
+    <div id="board"></div>
+</div>
+
+<script src="script.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (savedCollapsed) document.body.classList.add('sidebar-collapsed');
+
+        const savedBg = localStorage.getItem('background');
+        if (savedBg) {
+            document.documentElement.style.setProperty('--background-url', `url("Background_Collection/${savedBg}")`);
+        }
+    });
+
+    function toggle_sidebar() {
+        document.body.classList.toggle('sidebar-collapsed');
+        localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed'));
+
+        document.getElementById('difficulty-menu').style.display = 'none';
+        document.getElementById('background-menu').style.display = 'none';
+    }
+
+    function toggle_difficulty_dropdown() {
+        const menu = document.getElementById('difficulty-menu');
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        document.getElementById('background-menu').style.display = 'none';
+    }
+
+    function toggle_background_dropdown() {
+        const menu = document.getElementById('background-menu');
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        document.getElementById('difficulty-menu').style.display = 'none';
+    }
+
+
+
+
+    function toggle_guide() {
+        document.getElementById('guide-modal').style.display = 'block';
+    }
+
+    function hide_guide() {
+        document.getElementById('guide-modal').style.display = 'none';
+    }
+
+    function close_guide(event) {
+        const modal = document.getElementById('guide-modal');
+        const content = modal.querySelector('.modal-content');
+
+        if (!content.contains(event.target)) {
+            hide_guide();
+        }
+    }
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            hide_guide();
+        }
+    });
+</script>
+
+
+<div id="guide-modal" class="modal" onclick="close_guide(event)">
+    <div class="modal-content">
+        <span class="close-button" onclick="hide_guide()">&times;</span>
+        <div style="display: flex; flex-direction: row; gap: 20px;">
+            <div style="flex: 1; text-align: left;">
+                <h2>游戏说明</h2>
+                <p>
+                    欢迎来到扫雷 :D<br><br>
+                    玩家可左键点击屏幕中心区域的方格打开无雷区域，此游戏无右键标记功能。<br>
+                    控制面板和信息面板位于侧边栏中，玩家可以打开和收起。<br>
+                    玩家可通过侧边栏的按钮完成此游戏的 重设， 修改难度，以及修改背景。<br>
+                    此游戏搭载复杂算法，在信息面板中会展示当前游戏是否有确定解。<br>
+                    在有确定解的情况下，点击 Solve 按钮可以自动求解一步，点击 Solve All 可以自动求解至游戏结束或无解。<br>
+                    在无解情况下，玩家可点击一个不一定是雷的方格，我设计了 Reset Game-Field 算法可以在无解并且玩家触雷时重新排布雷的位置，确保当玩家实力足够时不会因为运气差而失败。<br>
+                </p>
+            </div>
+
+            <div style="flex: 1; text-align: left;">
+                <h2>Game Guide</h2>
+                <p>
+                    Welcome to Minesweeper :D<br><br>
+                    Left-click the grid area in the center of the screen to open safe tiles. This version does not support right-click marking.<br>
+                    The control panel and information panel are located in the sidebar, which you can expand or collapse.<br>
+                    Use the buttons in the sidebar to restart the game, change difficulty, or switch backgrounds.<br>
+                    This game includes a complex algorithm that shows whether the current game has a deterministic solution in the info panel.<br>
+                    When a deterministic solution exists, clicking "Solve" will make one logical move. Clicking "Solve All" continues until the game ends or becomes unsolvable.<br>
+                    If the game reaches an unsolvable state, you may still click a tile that might not be a mine. I’ve designed a Reset Game-Field algorithm that will re-distribute mines if a wrong tile is clicked in an unsolvable scenario—ensuring players with sufficient logic skills don’t lose due to pure luck.<br>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
