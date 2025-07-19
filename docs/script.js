@@ -1,4 +1,4 @@
-// Document Script.js 14.05.2025
+// Document Script.js 19.07.2025
 // *** Main JS-Code ***
 let first_step = true;
 let game_over = false;
