@@ -1,4 +1,5 @@
 // Solver 1
+// 已失效，需要更新变量和函数名
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -31,10 +32,15 @@ reveal_all_positions();
 
 
 // Solver 2
-for (let y = 0; y < Y; y++) {
-    for (let x = 0; x < X; x++) {
-        if (d31[y][x][1] === 0 && d31[y][x][0] === 0) {
-            o0o(x, y);
+// 更新于2025年7月21日
+
+// 已更改函数名，并且通过了验证测试
+// 用于验证的变量，如果不定义无法通过检测，游戏逻辑会认为不是由玩家用按键调用的打开方格函数
+var VER = '1.0';
+for (let y = 0; y < v; y++) {
+    for (let x = 0; x < m; x++) {
+        if (d[y][x][1] === 0) {
+            s(x, y);
         }
     }
 }

@@ -31,6 +31,12 @@ function start_game({s, n} = {}) {
     update_solvability_information();
     create_board();
     document.getElementById("status-info").textContent = "In Progress";
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && document.getElementById('end-message-modal').style.display === 'block') {
+            hide_end_message();
+        }
+    });
 }
 
 function create_board() {
@@ -92,6 +98,7 @@ function select_cell(i, j) {
             game_field.reveal_cell(i, j);
             clearInterval(timer_interval);
             document.getElementById("status-info").textContent = "Failed";
+            show_end_message(false);
             return;
         }
     }
@@ -135,6 +142,7 @@ function reveal_cell(i, j) {
         game_over = true;
         clearInterval(timer_interval);
         document.getElementById("status-info").textContent = "Completed";
+        show_end_message(true);
     }
 }
 
@@ -206,9 +214,23 @@ function solve() {
     }
 
     const selections = game_field.solver();
-    for (const position_str of selections) {
-        const position = Module.string_to_array(position_str);
-        reveal_cell(position[0], position[1]);
+    if (selections.size === 0) {
+        const safe_cells = [];
+        for (let i = 0; i < game_field.size[0]; i++) {
+            for (let j = 0; j < game_field.size[1]; j++) {
+                if (board[i][j].is_covered && !game_field.board_mines[i][j]) {
+                    safe_cells.push([i, j]);
+                }
+            }
+        }
+        const random_index = Math.floor(Math.random() * safe_cells.length);
+        const [i, j] = safe_cells[random_index];
+        reveal_cell(i, j);
+    } else {
+        for (const position_str of selections) {
+            const position = Module.string_to_array(position_str);
+            reveal_cell(position[0], position[1]);
+        }
     }
     game_field.calculate_complete_module_collection();
     update_solvability_information();
@@ -223,15 +245,54 @@ function solve_all() {
     while (!game_over) {
         const selections = game_field.solver();
         if (selections.size === 0) {
-            break;
-        }
-        for (const position_str of selections) {
-            const position = Module.string_to_array(position_str);
-            reveal_cell(position[0], position[1]);
+            const safe_cells = [];
+            for (let i = 0; i < game_field.size[0]; i++) {
+                for (let j = 0; j < game_field.size[1]; j++) {
+                    if (board[i][j].is_covered && !game_field.board_mines[i][j]) {
+                        safe_cells.push([i, j]);
+                    }
+                }
+            }
+            const random_index = Math.floor(Math.random() * safe_cells.length);
+            const [i, j] = safe_cells[random_index];
+            reveal_cell(i, j);
+        } else {
+            for (const position_str of selections) {
+                const position = Module.string_to_array(position_str);
+                reveal_cell(position[0], position[1]);
+            }
         }
         game_field.calculate_complete_module_collection();
         update_solvability_information();
     }
+}
+
+// End-Message
+function show_end_message(completed) {
+    const content = document.getElementById('end-message-content');
+
+    content.innerHTML = '';
+
+    const title = document.createElement('h2');
+    title.style.textAlign = 'center';
+    title.style.marginBottom = '-5px';
+    title.textContent = completed ? 'Congratulations' : 'Failed';
+
+    const message = document.createElement('p');
+    message.style.textAlign = 'center';
+    message.style.fontSize = '16px';
+    message.innerHTML = completed
+        ? "You've successfully completed the Minesweeper game.<br> Click anywhere to close this message."
+        : "You triggered a mine.<br> Click anywhere to close this message.";
+
+    content.appendChild(title);
+    content.appendChild(message);
+
+    document.getElementById('end-message-modal').style.display = 'block';
+}
+
+function hide_end_message() {
+    document.getElementById('end-message-modal').style.display = 'none';
 }
 
 
