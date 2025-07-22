@@ -154,10 +154,11 @@ body::before {
 }
 
 h1 {
-    padding: 20px;
-    margin: 0;
+    width: 20%;
+    margin-left: 40%;
     color: black;
     font-size: 28px;
+    cursor: pointer;
 }
 
 .expand-button {
