@@ -233,7 +233,7 @@ body.sidebar-collapsed .expand-button {
     padding: 6px;
     background: rgba(252, 252, 252, 0.15);
     color: rgba(252, 252, 252, 0.9);
-    border: 1.5px solid;
+    border: 1px solid;
     border-color: #f8f8f8 #a8a8a8 #a8a8a8 #f8f8f8;
     cursor: pointer;
     font-size: 12px;
