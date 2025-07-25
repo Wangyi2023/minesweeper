@@ -227,6 +227,8 @@ function update_game_information() {
 
     const density = (game_field.number_of_mines / (game_field.size[0] * game_field.size[1]) * 100).toFixed(2);
     document.getElementById('density-info').textContent = `${density}%`;
+
+    document.getElementById('marks-info').textContent = counter_marked;
 }
 
 function update_solvability_information() {
