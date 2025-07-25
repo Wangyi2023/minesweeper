@@ -124,6 +124,21 @@ body::before {
     animation: colorBlink 1s infinite ease-in-out;
 }
 
+.cell.marked {
+    position: relative;
+}
+
+.cell.marked::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-image: url("flag.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 @keyframes colorBlink {
     0%, 100% { background-color: rgba(255, 0, 0, 1); }
     50% { background-color: rgba(255, 0, 0, 0.4); }

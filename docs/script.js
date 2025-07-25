@@ -7,6 +7,7 @@ let timer_interval = null;
 let game_field = null;
 let board = [];
 let counter_revealed = 0;
+let counter_marked = 0;
 
 let solvable = false;
 
@@ -26,6 +27,7 @@ function start_game({s, n} = {}) {
     game_field = new Game_Field({ size: s, number_of_mines: n });
     board = [];
     counter_revealed = 0;
+    counter_marked = 0;
 
     update_game_information();
     update_solvability_information();
@@ -53,6 +55,7 @@ function create_board() {
             const cell = {
                 is_mine: game_field.board_mines[i][j],
                 is_covered: game_field.board_covered[i][j],
+                is_marked: false,
                 number_of_surrounding_mines: game_field.board_number[i][j],
                 element: null,
             };
@@ -60,6 +63,10 @@ function create_board() {
             const div = document.createElement("div");
             div.className = "cell";
             div.addEventListener("click", () => select_cell(i, j));
+            div.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                mark_cell(i, j);
+            });
             cell.element = div;
             board_element.appendChild(div);
 
@@ -77,6 +84,11 @@ function create_board() {
 
 function select_cell(i, j) {
     if (game_over || !board[i][j].is_covered) return;
+
+    if (board[i][j].is_marked) {
+        mark_cell(i, j);
+        return;
+    }
 
     if (first_step) {
         start_timer();
@@ -144,6 +156,23 @@ function reveal_cell(i, j) {
         document.getElementById("status-info").textContent = "Completed";
         show_end_message(true);
     }
+}
+
+function mark_cell(i, j) {
+    if (game_over || !board[i][j].is_covered) return;
+
+    const cell = board[i][j];
+    cell.is_marked = !cell.is_marked;
+
+    if (cell.is_marked) {
+        cell.element.classList.add("marked");
+        counter_marked++;
+    } else {
+        cell.element.classList.remove("marked");
+        counter_marked--;
+    }
+
+    update_game_information();
 }
 
 function get_difficulty_params(difficulty) {
@@ -266,6 +295,21 @@ function solve_all() {
         update_solvability_information();
     }
 }
+
+function auto_mark() {
+    for (let module of game_field.complete_module_collection) {
+        if (module.mines === module.covered_positions.size) {
+            for (let position_str of module.covered_positions) {
+                const [r, c] = Module.string_to_array(position_str);
+                if (!board[r][c].is_marked) {
+                    mark_cell(r, c);
+                }
+            }
+        }
+    }
+}
+
+
 
 // End-Message
 function show_end_message(completed) {
