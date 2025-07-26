@@ -78,6 +78,26 @@ body::before {
     right: -10px;
 }
 
+.board-wrapper {
+    position: relative;
+    display: inline-block;
+    padding: 2px;
+}
+
+.board-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+    z-index: 10;
+
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
 #board {
     display: grid;
     background: transparent;
