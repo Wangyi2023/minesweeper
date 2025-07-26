@@ -137,6 +137,10 @@ function reveal_cell(i, j) {
 
     cell.is_covered = false;
     cell.element.classList.add("revealed");
+    if (cell.is_marked) {
+        cell.is_marked = false;
+        cell.element.classList.remove('marked')
+    }
     cell.element.textContent = cell.number_of_surrounding_mines > 0
         ? String(cell.number_of_surrounding_mines)
         : " ";
