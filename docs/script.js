@@ -60,6 +60,7 @@ function create_board() {
                 element: null,
             };
             row.push(cell);
+
             const div = document.createElement("div");
             div.className = "cell";
             div.addEventListener("click", () => select_cell(i, j));
@@ -91,12 +92,17 @@ function select_cell(i, j) {
     }
 
     if (first_step) {
+        if (game_field.board_mines[i][j]) {
+            start_game();
+            select_cell(i, j);
+            return;
+        }
         start_timer();
         first_step = false;
     }
 
     if (game_field.board_mines[i][j]) {
-        if (!solvable) {
+        if (!solvable && game_field.algorithm_enabled) {
             game_field.reset_game_field(Module.array_to_string([i, j]));
             create_board();
         } else {
@@ -232,11 +238,20 @@ function update_game_information() {
 }
 
 function update_solvability_information() {
+    if (!game_field.algorithm_enabled || game_over) {
+        document.getElementById('solvability-info').textContent = '---';
+        return;
+    }
+
     solvable = game_field.solvable();
     document.getElementById('solvability-info').textContent = solvable ? 'true' : 'false';
 }
 
 function solve() {
+    if (!game_field.algorithm_enabled) {
+        return;
+    }
+
     if (first_step) {
         select_cell(Math.floor(Math.random() * game_field.size[0]), Math.floor(Math.random() * game_field.size[1]));
         game_field.calculate_complete_module_collection();
@@ -268,6 +283,10 @@ function solve() {
 }
 
 function solve_all() {
+    if (!game_field.algorithm_enabled) {
+        return;
+    }
+
     if (first_step) {
         select_cell(Math.floor(Math.random() * game_field.size[0]), Math.floor(Math.random() * game_field.size[1]));
         game_field.calculate_complete_module_collection();
@@ -299,6 +318,9 @@ function solve_all() {
 }
 
 function auto_mark() {
+    if (!game_field.algorithm_enabled) {
+        return;
+    }
     for (let module of game_field.complete_module_collection) {
         if (module.mines === module.covered_positions.size) {
             for (let position_str of module.covered_positions) {
@@ -309,6 +331,42 @@ function auto_mark() {
             }
         }
     }
+}
+
+function activate_algorithm(password) {
+    const STORED_HASH = '6db07d30';
+    if (hash_x(password) !== STORED_HASH) return;
+    game_field.activate_algorithm();
+    console.log("Algorithm activated.");
+    update_game_information();
+    update_solvability_information();
+}
+function deactivate_algorithm() {
+    game_field.deactivate_algorithm();
+    console.log("Algorithm deactivated.");
+    update_game_information();
+    update_solvability_information();
+}
+function hash_x(input) {
+    const str = String(input);
+    let hash = 0x811C9DC5;
+    for (let i = 0; i < str.length; i++) {
+        hash ^= str.charCodeAt(i);
+        hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    }
+
+    hash ^= 0xDEADBEEF;
+    hash = (hash >>> 16) ^ (hash & 0xFFFF);
+    hash *= 0xCAFEBABE;
+    hash ^= hash >>> 15;
+    hash = Math.abs(hash);
+
+    const A = 0x6D2B79F5;
+    hash = (hash * A) >>> 0;
+    hash ^= (hash >> 5) | (hash << 27);
+    hash = (hash * 0x45D9F3B) >>> 0;
+
+    return (hash >>> 0).toString(16).padStart(8, '0');
 }
 
 

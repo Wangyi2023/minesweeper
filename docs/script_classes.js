@@ -6,6 +6,9 @@ class Game_Field {
         this.size = size || [16, 30];
         this.number_of_mines = number_of_mines || 99;
 
+        // Algorithm_Enabled
+        this.algorithm_enabled = size[0] * size[1] <= 480;
+
         this.board_mines = board_mines || this.create_empty_board(this.size, false);
         this.board_covered = board_covered || this.create_empty_board(this.size, true);
 
@@ -13,6 +16,15 @@ class Game_Field {
         this.board_number = this.calculate_board_number();
 
         this.complete_module_collection = this.calculate_complete_module_collection();
+    }
+
+    activate_algorithm() {
+        this.algorithm_enabled = true;
+        this.update_complete_module_collection();
+    }
+    deactivate_algorithm() {
+        this.algorithm_enabled = false;
+        this.complete_module_collection = new Set();
     }
 
     update_board_number() {
@@ -51,6 +63,10 @@ class Game_Field {
 
     // ALG-2 Reset Game_Field
     reset_game_field(target_position_str) {
+        if (!this.algorithm_enabled) {
+            return false;
+        }
+
         console.log('*** Reset Game-Field ***  ' + target_position_str);
         const filtered_module_collection = [];
         for (const module of this.complete_module_collection) {
@@ -142,6 +158,9 @@ class Game_Field {
     }
     // ALG-1 Solver
     solver() {
+        if (!this.algorithm_enabled) {
+            return new Set;
+        }
         const selection = new Set();
         for (const module of this.complete_module_collection) {
             if (module.mines === 0) {
@@ -155,6 +174,9 @@ class Game_Field {
     }
     // ALG-0
     solvable() {
+        if (!this.algorithm_enabled) {
+            return false;
+        }
         for (const module of this.complete_module_collection) {
             if (module.mines === 0) {
                 return true;
@@ -165,6 +187,10 @@ class Game_Field {
 
     // Calculator 3
     calculate_complete_module_collection() {
+        if (!this.algorithm_enabled) {
+            return new Set();
+        }
+
         const module_collection = this.calculate_new_modules(this.create_module_collection());
         const inverse_module = this.calculate_inverse_module(module_collection);
 
