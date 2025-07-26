@@ -201,6 +201,7 @@ function get_difficulty_params(difficulty) {
 }
 
 
+
 function change_difficulty(difficulty) {
     const params = get_difficulty_params(difficulty);
     localStorage.setItem('difficulty', difficulty);
@@ -398,7 +399,6 @@ function show_end_message(completed) {
 function hide_end_message() {
     document.getElementById('end-message-modal').style.display = 'none';
 }
-
 
 
 // *** Init ***
