@@ -404,7 +404,7 @@ function handle_keydown(event) {
         updateCursor();
 
         hide_guide();
-        document.getElementById('difficulty-input-container').style.display = 'none';
+        document.getElementById('difficulty-menu').style.display = 'none';
         document.getElementById('background-menu').style.display = 'none';
         return;
     }
