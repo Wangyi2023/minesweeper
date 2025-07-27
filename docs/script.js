@@ -256,6 +256,46 @@ function update_solvability_information() {
     document.getElementById('solvability-info').textContent = solvable ? 'true' : 'false';
 }
 
+function send_hint() {
+    if (!game_field.algorithm_enabled || game_over) {
+        return;
+    }
+
+    let hint_i = 0;
+    let hint_j = 0;
+    const selections = game_field.solver();
+    if (selections.size === 0 || first_step) {
+        const safe_cells = [];
+        for (let i = 0; i < game_field.size[0]; i++) {
+            for (let j = 0; j < game_field.size[1]; j++) {
+                if (board[i][j].is_covered && !game_field.board_mines[i][j]) {
+                    safe_cells.push([i, j]);
+                }
+            }
+        }
+        const random_index = Math.floor(Math.random() * safe_cells.length);
+        [hint_i, hint_j] = safe_cells[random_index];
+    } else {
+        for (const position_str of selections) {
+            [hint_i, hint_j] = Module.string_to_array(position_str);
+        }
+    }
+
+    if (cursor_enabled) {
+        [cursor_row, cursor_column] = [hint_i, hint_j];
+        updateCursor();
+    } else {
+        cursor_enabled = true;
+        [cursor_row, cursor_column] = [hint_i, hint_j];
+        updateCursor();
+
+        setTimeout(() => {
+            cursor_enabled = false;
+            updateCursor();
+        }, 2000);
+    }
+}
+
 function solve() {
     if (!game_field.algorithm_enabled || game_over) {
         return;
@@ -428,6 +468,9 @@ function handle_keydown(event) {
         case 'd':
         case 'arrowright':
             cursor_column = Math.min(game_field.size[1] - 1, cursor_column + step);
+            break;
+        case 'h':
+            send_hint();
             break;
         case 'm':
             mark_cell(cursor_row, cursor_column);
