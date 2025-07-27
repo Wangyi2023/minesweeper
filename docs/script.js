@@ -253,7 +253,7 @@ function update_solvability_information() {
 }
 
 function solve() {
-    if (!game_field.algorithm_enabled) {
+    if (!game_field.algorithm_enabled || game_over) {
         return;
     }
 
@@ -288,7 +288,7 @@ function solve() {
 }
 
 function solve_all() {
-    if (!game_field.algorithm_enabled) {
+    if (!game_field.algorithm_enabled || game_over) {
         return;
     }
 
