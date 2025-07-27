@@ -434,9 +434,6 @@ function handle_keydown(event) {
     hide_end_message();
     const key = event.key.toLowerCase();
     if (key === 'escape') {
-        cursor_enabled = false;
-        updateCursor();
-
         hide_guide();
         document.getElementById('difficulty-menu').style.display = 'none';
         document.getElementById('background-menu').style.display = 'none';
