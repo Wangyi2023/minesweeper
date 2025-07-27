@@ -11,6 +11,10 @@ let counter_marked = 0;
 
 let solvable = false;
 
+let cursor_enabled = false;
+let cursor_row = 0;
+let cursor_column = 0;
+
 function start_game({s, n} = {}) {
     const difficulty = localStorage.getItem('difficulty') || 'high';
     if (!s || !n) {
@@ -29,6 +33,9 @@ function start_game({s, n} = {}) {
     counter_revealed = 0;
     counter_marked = 0;
 
+    cursor_row = game_field.size[0] > 8 ? 4 : 0;
+    cursor_column = game_field.size[1] > 8 ? 4 : 0;
+
     update_game_information();
     update_solvability_information();
     create_board();
@@ -39,6 +46,9 @@ function start_game({s, n} = {}) {
             hide_end_message();
         }
     });
+
+    document.addEventListener('keydown', handle_keydown);
+    updateCursor();
 }
 
 function create_board() {
@@ -372,6 +382,71 @@ function hash_x(input) {
     hash = (hash * 0x45D9F3B) >>> 0;
 
     return (hash >>> 0).toString(16).padStart(8, '0');
+}
+
+
+// --- * Cursor * ---
+function updateCursor() {
+    document.querySelectorAll('.cell').forEach(cell => {
+        cell.classList.remove('cursor');
+    });
+
+    if (cursor_enabled && board[cursor_row] && board[cursor_row][cursor_column]) {
+        board[cursor_row][cursor_column].element.classList.add('cursor');
+    }
+}
+
+function handle_keydown(event) {
+    hide_end_message();
+    if (event.key === 'Escape') {
+        cursor_enabled = false;
+        updateCursor();
+        return;
+    }
+
+
+    if (event.key.toLowerCase() === 'f') {
+        cursor_enabled = !cursor_enabled;
+        updateCursor();
+        return;
+    }
+
+    if (!cursor_enabled) return;
+
+    const step = event.shiftKey ? 4 : 1;
+
+    switch (event.key.toLowerCase()) {
+        case 'w':
+        case 'arrowup':
+            cursor_row = Math.max(0, cursor_row - step);
+            break;
+        case 's':
+        case 'arrowdown':
+            cursor_row = Math.min(game_field.size[0] - 1, cursor_row + step);
+            break;
+        case 'a':
+        case 'arrowleft':
+            cursor_column = Math.max(0, cursor_column - step);
+            break;
+        case 'd':
+        case 'arrowright':
+            cursor_column = Math.min(game_field.size[1] - 1, cursor_column + step);
+            break;
+        case 'm':
+            mark_cell(cursor_row, cursor_column);
+            break;
+        case 'n':
+            select_cell(cursor_row, cursor_column);
+            break;
+        case '0':
+            solve();
+            break;
+        case 'r':
+            start_game();
+            break;
+    }
+
+    updateCursor();
 }
 
 
