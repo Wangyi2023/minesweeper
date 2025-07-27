@@ -41,12 +41,6 @@ function start_game({s, n} = {}) {
     create_board();
     document.getElementById("status-info").textContent = "In Progress";
 
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && document.getElementById('end-message-modal').style.display === 'block') {
-            hide_end_message();
-        }
-    });
-
     document.addEventListener('keydown', handle_keydown);
     updateCursor();
 }
@@ -399,7 +393,7 @@ function updateCursor() {
 function handle_keydown(event) {
     hide_end_message();
     const key = event.key.toLowerCase();
-    if (key === 'Escape') {
+    if (key === 'escape') {
         cursor_enabled = false;
         updateCursor();
 
