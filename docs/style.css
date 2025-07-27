@@ -155,7 +155,7 @@ body::before {
             cursorPulseRed 1s infinite ease-in-out,
             cursorGlowRed 0.5s infinite alternate;
     pointer-events: none;
-    z-index: 4;
+    z-index: 20;
 }
 
 @keyframes cursorPulseRed {
@@ -206,7 +206,7 @@ body::before {
 
 .cell.cursor {
     position: relative;
-    z-index: 3;
+    z-index: 20;
 }
 
 .cell.cursor:not(.mine)::before {
