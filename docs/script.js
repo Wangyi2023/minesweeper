@@ -398,14 +398,18 @@ function updateCursor() {
 
 function handle_keydown(event) {
     hide_end_message();
-    if (event.key === 'Escape') {
+    const key = event.key.toLowerCase();
+    if (key === 'Escape') {
         cursor_enabled = false;
         updateCursor();
+
+        hide_guide();
+        document.getElementById('difficulty-input-container').style.display = 'none';
+        document.getElementById('background-menu').style.display = 'none';
         return;
     }
 
-
-    if (event.key.toLowerCase() === 'f') {
+    if (key === 'f') {
         cursor_enabled = !cursor_enabled;
         updateCursor();
         return;
@@ -414,8 +418,7 @@ function handle_keydown(event) {
     if (!cursor_enabled) return;
 
     const step = event.shiftKey ? 4 : 1;
-
-    switch (event.key.toLowerCase()) {
+    switch (key) {
         case 'w':
         case 'arrowup':
             cursor_row = Math.max(0, cursor_row - step);
