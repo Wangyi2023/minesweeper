@@ -138,15 +138,50 @@ body::before {
     background-color: rgba(255, 0, 0, 0.2);
 }
 
-.cell.mine:not(.cursor)::before {
+.cell.mine::before {
     content: "";
     position: absolute;
-    width: 60%;
-    height: 60%;
-    top: 20%;
-    left: 20%;
-    z-index: 5;
-    animation: colorBlink 1s infinite ease-in-out;
+    background-color: rgba(255, 0, 0, 0.9);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255, 0, 0, 0.9);
+    box-shadow:
+            0 0 5px 1px rgba(255, 0, 0, 0.8),
+            0 0 10px 2px rgba(255, 0, 0, 0.6),
+            0 0 15px 3px rgba(255, 0, 0, 0.4);
+    animation:
+            cursorPulseRed 1s infinite ease-in-out,
+            cursorGlowRed 0.5s infinite alternate;
+    pointer-events: none;
+    z-index: 4;
+}
+
+@keyframes cursorPulseRed {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+}
+
+@keyframes cursorGlowRed {
+    0% {
+        box-shadow:
+                0 0 5px 1px rgba(255, 0, 0, 0.8),
+                0 0 10px 2px rgba(255, 0, 0, 0.6),
+                0 0 15px 3px rgba(255, 0, 0, 0.4);
+    }
+    100% {
+        box-shadow:
+                0 0 8px 2px rgba(255, 0, 0, 0.9),
+                0 0 16px 4px rgba(255, 0, 0, 0.7),
+                0 0 24px 6px rgba(255, 0, 0, 0.5);
+    }
 }
 
 .cell.marked {
@@ -216,52 +251,6 @@ body::before {
                 0 0 8px 2px rgba(255, 255, 255, 0.9),
                 0 0 16px 4px rgba(255, 255, 255, 0.7),
                 0 0 24px 6px rgba(255, 255, 255, 0.5);
-    }
-}
-
-.cell.cursor.mine::before {
-    content: "";
-    position: absolute;
-    background-color: rgba(255, 0, 0, 0.9);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border: 2px solid rgba(255, 0, 0, 0.9);
-    box-shadow:
-            0 0 5px 1px rgba(255, 0, 0, 0.8),
-            0 0 10px 2px rgba(255, 0, 0, 0.6),
-            0 0 15px 3px rgba(255, 0, 0, 0.4);
-    animation:
-            cursorPulseRed 1s infinite ease-in-out,
-            cursorGlowRed 0.5s infinite alternate;
-    pointer-events: none;
-    z-index: 4;
-}
-
-@keyframes cursorPulseRed {
-    0%, 100% {
-        transform: scale(1);
-        opacity: 0.9;
-    }
-    50% {
-        transform: scale(1.05);
-        opacity: 1;
-    }
-}
-
-@keyframes cursorGlowRed {
-    0% {
-        box-shadow:
-                0 0 5px 1px rgba(255, 0, 0, 0.8),
-                0 0 10px 2px rgba(255, 0, 0, 0.6),
-                0 0 15px 3px rgba(255, 0, 0, 0.4);
-    }
-    100% {
-        box-shadow:
-                0 0 8px 2px rgba(255, 0, 0, 0.9),
-                0 0 16px 4px rgba(255, 0, 0, 0.7),
-                0 0 24px 6px rgba(255, 0, 0, 0.5);
     }
 }
 
