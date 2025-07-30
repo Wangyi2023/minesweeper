@@ -125,7 +125,7 @@
 
     function toggle_sidebar() {
         document.body.classList.toggle('sidebar-collapsed');
-        localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed'));
+        localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed').toString());
 
         document.getElementById('difficulty-menu').style.display = 'none';
         document.getElementById('background-menu').style.display = 'none';

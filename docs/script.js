@@ -440,6 +440,11 @@ function handle_keydown(event) {
         return;
     }
 
+    if (key === 'c') {
+        toggle_sidebar();
+        return;
+    }
+
     if (key === 'f') {
         cursor_enabled = !cursor_enabled;
         updateCursor();
