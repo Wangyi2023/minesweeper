@@ -107,8 +107,9 @@ function select_cell(i, j) {
 
     if (game_field.board_mines[i][j]) {
         if (!solvable && game_field.algorithm_enabled) {
-            game_field.reset_game_field(Module.array_to_string([i, j]));
-            create_board();
+            if (game_field.reset_game_field(Module.array_to_string([i, j]))) {
+                create_board();
+            }
         } else {
             const cell = board[i][j];
             cell.element.textContent = " ";

@@ -107,8 +107,8 @@ class Game_Field {
             return this.reset_one_position(target_position_str);
         }
 
-        console.log('Remove ' + positions_remove);
-        console.log('Add ' + positions_add);
+        console.log('Remove ' + positions_remove.size + '. ' + positions_remove);
+        console.log('Add ' + positions_add.size + '. ' + positions_add);
         for (const position_remove of positions_remove) {
             const position = Module.string_to_array(position_remove);
             this.board_mines[position[0]][position[1]] = false;
@@ -117,6 +117,7 @@ class Game_Field {
             const position = Module.string_to_array(position_add);
             this.board_mines[position[0]][position[1]] = true;
         }
+        this.add_mines_partially(positions_remove.size - positions_remove.size);
 
         this.update_board_number();
         this.update_complete_module_collection();
@@ -361,8 +362,15 @@ class Game_Field {
             }
         }
     }
-    add_mines_partially(n) {}
-    add_mine_partially() {}
+    add_mines_partially(n) {
+        console.log('Add ' + n + ' Mines partially')
+        while (n > 0) {
+            this.add_mine_partially();
+            n--;
+        }
+    }
+    add_mine_partially() {
+    }
 }
 
 
