@@ -2,17 +2,18 @@
 class Game_Field {
     static final_surrounding_positions = [[-1, -1], [-1, 0], [-1, 1], [0, -1],[0, 1], [1, -1], [1, 0], [1, 1]];
 
-    constructor({ size, number_of_mines, board_mines, board_covered } = {}) {
-        this.size = size || [16, 30];
-        this.number_of_mines = number_of_mines || 99;
+    constructor({ X, Y, N, board_mines, board_covered } = {}) {
+        this.X = X || 16;
+        this.Y = Y || 30;
+        this.N = N || 99;
 
         // Algorithm_Enabled
-        this.algorithm_enabled = size[0] * size[1] <= 480;
+        this.algorithm_enabled = this.X * this.Y <= 480;
 
-        this.board_mines = board_mines || this.create_empty_board(this.size, false);
-        this.board_covered = board_covered || this.create_empty_board(this.size, true);
+        this.board_mines = board_mines || this.create_empty_board(this.X, this.Y, false);
+        this.board_covered = board_covered || this.create_empty_board(this.X, this.Y, true);
 
-        this.add_mines_random(this.number_of_mines);
+        this.add_mines_random(this.N);
         this.board_number = this.calculate_board_number();
 
         this.complete_module_collection = this.calculate_complete_module_collection();
@@ -38,23 +39,23 @@ class Game_Field {
         this.board_covered[row][column] = false;
     }
 
-    create_empty_board(size, value = false) {
+    create_empty_board(X, Y, value = false) {
         const board = [];
-        for (let i = 0; i < size[0]; i++) {
+        for (let x = 0; x < X; x++) {
             const row = [];
-            for (let j = 0; j < size[1]; j++) {
+            for (let y = 0; y < Y; y++) {
                 row.push(value);
             }
             board.push(row);
         }
         return board;
     }
-    create_copy(size, board) {
+    create_copy(X, Y, board) {
         const board_copy = []
-        for (let i = 0; i < size[0]; i++) {
+        for (let x = 0; x < X; x++) {
             const row = [];
-            for (let j = 0; j < size[1]; j++) {
-                row.push(board[i][j]);
+            for (let y = 0; y < Y; y++) {
+                row.push(board[x][y]);
             }
             board_copy.push(row);
         }
@@ -103,7 +104,7 @@ class Game_Field {
         }
 
         if (positions_add.size === 0) {
-            console.log('*** No Linked-Position ***')
+            console.log('*** No Linked-Position ***');
             return this.reset_one_position(target_position_str);
         }
 
@@ -125,8 +126,8 @@ class Game_Field {
     }
     reset_one_position(target_position_str) {
         const target_position = Module.string_to_array(target_position_str);
-        for (let i = 0; i < this.size[0]; i++) {
-            for (let j = 0; j < this.size[1]; j++) {
+        for (let i = 0; i < this.X; i++) {
+            for (let j = 0; j < this.Y; j++) {
                 if (this.board_mines[i][j] || !this.board_covered[i][j] && !(i === target_position[0] && j === target_position[1])) {
                     continue;
                 }
@@ -134,8 +135,8 @@ class Game_Field {
                 let valid = true;
                 this.board_mines[target_position[0]][target_position[1]] = false;
                 this.board_mines[i][j] = true;
-                for (let row = 0; row < this.size[0]; row++) {
-                    for (let column = 0; column < this.size[1]; column++) {
+                for (let row = 0; row < this.X; row++) {
+                    for (let column = 0; column < this.Y; column++) {
                         if (!this.board_covered[row][column] && this.board_number[row][column] !== this.calculate_number_of_surrounding_mines(row, column)) {
                             valid = false;
                         }
@@ -209,8 +210,8 @@ class Game_Field {
     // Calculator 2
     create_module_collection() {
         const base_module_collection = [];
-        for (let i = 0; i < this.size[0]; i++) {
-            for (let j = 0; j < this.size[1]; j++) {
+        for (let i = 0; i < this.X; i++) {
+            for (let j = 0; j < this.Y; j++) {
                 if (!this.board_covered[i][j] && this.board_number[i][j] > 0) {
                     const module_temp = new Module({
                         mines : this.calculate_number_of_surrounding_mines(i, j),
@@ -292,8 +293,8 @@ class Game_Field {
     // Calculator 1
     calculate_all_covered_positions() {
         const position_collection = new Set();
-        for (let i = 0; i < this.size[0]; i++) {
-            for (let j = 0; j < this.size[1]; j++) {
+        for (let i = 0; i < this.X; i++) {
+            for (let j = 0; j < this.Y; j++) {
                 if (this.board_covered[i][j]) {
                     position_collection.add(Module.array_to_string([i, j]));
                 }
@@ -313,9 +314,9 @@ class Game_Field {
     // Calculator 0
     calculate_board_number() {
         const board_number = []
-        for (let i = 0; i < this.size[0]; i++) {
+        for (let i = 0; i < this.X; i++) {
             const row = []
-            for (let j = 0; j < this.size[1]; j++) {
+            for (let j = 0; j < this.Y; j++) {
                 row.push(this.calculate_number_of_surrounding_mines(i, j))
             }
             board_number.push(row);
@@ -332,8 +333,8 @@ class Game_Field {
     calculate_surrounding_cells(row, column) {
         const surrounding_cells = [];
         for (const position of Game_Field.final_surrounding_positions) {
-            if (row + position[0] >= 0 && row + position[0] < this.size[0]
-                && column + position[1] >= 0 && column + position[1] < this.size[1]) {
+            if (row + position[0] >= 0 && row + position[0] < this.X
+                && column + position[1] >= 0 && column + position[1] < this.Y) {
                 surrounding_cells.push([row + position[0], column + position[1]]);
             }
         }
@@ -343,8 +344,8 @@ class Game_Field {
     // Add-Mines
     calculate_number_of_mines() {
         let counter = 0;
-        for (let i = 0; i < this.size[0]; i++) {
-            for (let j = 0; j < this.size[1]; j++) {
+        for (let i = 0; i < this.X; i++) {
+            for (let j = 0; j < this.Y; j++) {
                 counter += this.board_mines[i][j] ? 1 : 0;
             }
         }
@@ -352,9 +353,9 @@ class Game_Field {
     }
     add_mines_random(n) {
         let counter = this.calculate_number_of_mines();
-        while (n > 0 && n + counter < this.size[0] * this.size[1]) {
-            const row = Math.floor(Math.random() * this.size[0]);
-            const column = Math.floor(Math.random() * this.size[1]);
+        while (n > 0 && n + counter < this.X * this.Y) {
+            const row = Math.floor(Math.random() * this.X);
+            const column = Math.floor(Math.random() * this.Y);
 
             if (!this.board_mines[row][column]) {
                 this.board_mines[row][column] = true;

@@ -15,12 +15,13 @@ let cursor_enabled = false;
 let cursor_row = 0;
 let cursor_column = 0;
 
-function start_game({s, n} = {}) {
+function start_game({X, Y, N} = {}) {
     const difficulty = localStorage.getItem('difficulty') || 'high';
-    if (!s || !n) {
+    if (!X || !Y || !N) {
         const params = get_difficulty_params(difficulty);
-        s = params.size;
-        n = params.number_of_mines;
+        X = params.size_x;
+        Y = params.size_y;
+        N = params.number_of_mines;
     }
 
     first_step = true;
@@ -28,13 +29,13 @@ function start_game({s, n} = {}) {
     clearInterval(timer_interval);
     start_time = null;
 
-    game_field = new Game_Field({ size: s, number_of_mines: n });
+    game_field = new Game_Field({ X: X, Y: Y, N: N });
     board = [];
     counter_revealed = 0;
     counter_marked = 0;
 
-    cursor_row = game_field.size[0] > 8 ? 4 : 0;
-    cursor_column = game_field.size[1] > 8 ? 4 : 0;
+    cursor_row = game_field.X > 8 ? 4 : 0;
+    cursor_column = game_field.Y > 8 ? 4 : 0;
 
     update_game_information();
     update_solvability_information();
@@ -49,13 +50,13 @@ function create_board() {
     board = [];
     counter_revealed = 0;
     const board_element = document.getElementById("board");
-    board_element.style.gridTemplateRows = `repeat(${game_field.size[0]}, 20px)`;
-    board_element.style.gridTemplateColumns = `repeat(${game_field.size[1]}, 20px)`;
+    board_element.style.gridTemplateRows = `repeat(${game_field.X}, 20px)`;
+    board_element.style.gridTemplateColumns = `repeat(${game_field.Y}, 20px)`;
     board_element.innerHTML = "";
 
-    for (let i = 0; i < game_field.size[0]; i++) {
+    for (let i = 0; i < game_field.X; i++) {
         let row = [];
-        for (let j = 0; j < game_field.size[1]; j++) {
+        for (let j = 0; j < game_field.Y; j++) {
             const cell = {
                 is_mine: game_field.board_mines[i][j],
                 is_covered: game_field.board_covered[i][j],
@@ -158,14 +159,14 @@ function reveal_cell(i, j) {
             for (let delta_j of [-1, 0, 1]) {
                 const row = i + delta_i;
                 const column = j + delta_j;
-                if (row >= 0 && row < game_field.size[0] && column >= 0 && column < game_field.size[1]) {
+                if (row >= 0 && row < game_field.X && column >= 0 && column < game_field.Y) {
                     reveal_cell(row, column);
                 }
             }
         }
     }
 
-    if (counter_revealed === game_field.size[0] * game_field.size[1] - game_field.number_of_mines) {
+    if (counter_revealed === game_field.X * game_field.Y - game_field.N) {
         game_over = true;
         clearInterval(timer_interval);
         document.getElementById("status-info").textContent = "Completed";
@@ -192,20 +193,20 @@ function mark_cell(i, j) {
 
 function get_difficulty_params(difficulty) {
     switch (difficulty) {
-        case 'low': return { size: [9, 9], number_of_mines: 10 };
-        case 'medium': return { size: [16, 16], number_of_mines: 40 };
-        case 'high': return { size: [16, 30], number_of_mines: 99 };
+        case 'low':
+            return { size_x: 9, size_y: 9, number_of_mines: 10 };
+        case 'medium':
+            return { size_x: 16, size_y: 16, number_of_mines: 40 };
+        case 'high':
+            return { size_x: 16, size_y: 30, number_of_mines: 99 };
         case 'fullscreen':
-            const cellSize = 22;
-            const size = [
-                Math.floor((window.innerHeight - 100) / cellSize),
-                Math.floor(window.innerWidth / cellSize)
-            ];
-            return {
-                size,
-                number_of_mines: Math.floor(size[0] * size[1] * 0.20625)
-            };
-        default: return { size: [16, 30], number_of_mines: 99 };
+            const cell_size = 22;
+            const X = Math.floor((window.innerHeight - 100) / cell_size);
+            const Y = Math.floor(window.innerWidth / cell_size);
+            const N = Math.floor( X * Y * 0.20625);
+            return { size_x: X, size_y: Y, number_of_mines: N };
+        default:
+            return { size_x: 16, size_y: 30, number_of_mines: 99 };
     }
 }
 
@@ -214,7 +215,7 @@ function get_difficulty_params(difficulty) {
 function change_difficulty(difficulty) {
     const params = get_difficulty_params(difficulty);
     localStorage.setItem('difficulty', difficulty);
-    start_game({ s : params.size, n : params.number_of_mines });
+    start_game({ X : params.size_x, Y : params.size_y, N : params.number_of_mines });
 }
 
 function select_difficulty(level) {
@@ -239,9 +240,9 @@ function update_game_information() {
     const time = start_time ? ((Date.now() - start_time) / 1000).toFixed(1) : "0.0";
     document.getElementById('time-info').textContent = `${time} s`;
 
-    document.getElementById('board-info').textContent = `${game_field.size[0]} × ${game_field.size[1]} / Mines ${game_field.number_of_mines}`;
+    document.getElementById('board-info').textContent = `${game_field.X} × ${game_field.Y} / Mines ${game_field.N}`;
 
-    const density = (game_field.number_of_mines / (game_field.size[0] * game_field.size[1]) * 100).toFixed(2);
+    const density = (game_field.N / (game_field.X * game_field.Y) * 100).toFixed(2);
     document.getElementById('density-info').textContent = `${density}%`;
 
     document.getElementById('marks-info').textContent = counter_marked;
@@ -267,8 +268,8 @@ function send_hint() {
     const selections = game_field.solver();
     if (selections.size === 0 || first_step) {
         const safe_cells = [];
-        for (let i = 0; i < game_field.size[0]; i++) {
-            for (let j = 0; j < game_field.size[1]; j++) {
+        for (let i = 0; i < game_field.X; i++) {
+            for (let j = 0; j < game_field.Y; j++) {
                 if (board[i][j].is_covered && !game_field.board_mines[i][j]) {
                     safe_cells.push([i, j]);
                 }
@@ -303,7 +304,7 @@ function solve() {
     }
 
     if (first_step) {
-        select_cell(Math.floor(Math.random() * game_field.size[0]), Math.floor(Math.random() * game_field.size[1]));
+        select_cell(Math.floor(Math.random() * game_field.X), Math.floor(Math.random() * game_field.Y));
         game_field.calculate_complete_module_collection();
         update_solvability_information();
         return;
@@ -312,8 +313,8 @@ function solve() {
     const selections = game_field.solver();
     if (selections.size === 0) {
         const safe_cells = [];
-        for (let i = 0; i < game_field.size[0]; i++) {
-            for (let j = 0; j < game_field.size[1]; j++) {
+        for (let i = 0; i < game_field.X; i++) {
+            for (let j = 0; j < game_field.Y; j++) {
                 if (board[i][j].is_covered && !game_field.board_mines[i][j]) {
                     safe_cells.push([i, j]);
                 }
@@ -338,7 +339,7 @@ function solve_all() {
     }
 
     if (first_step) {
-        select_cell(Math.floor(Math.random() * game_field.size[0]), Math.floor(Math.random() * game_field.size[1]));
+        select_cell(Math.floor(Math.random() * game_field.X), Math.floor(Math.random() * game_field.Y));
         game_field.calculate_complete_module_collection();
         update_solvability_information();
     }
@@ -346,8 +347,8 @@ function solve_all() {
         const selections = game_field.solver();
         if (selections.size === 0) {
             const safe_cells = [];
-            for (let i = 0; i < game_field.size[0]; i++) {
-                for (let j = 0; j < game_field.size[1]; j++) {
+            for (let i = 0; i < game_field.X; i++) {
+                for (let j = 0; j < game_field.Y; j++) {
                     if (board[i][j].is_covered && !game_field.board_mines[i][j]) {
                         safe_cells.push([i, j]);
                     }
@@ -462,7 +463,7 @@ function handle_keydown(event) {
             break;
         case 's':
         case 'arrowdown':
-            cursor_row = Math.min(game_field.size[0] - 1, cursor_row + step);
+            cursor_row = Math.min(game_field.X - 1, cursor_row + step);
             break;
         case 'a':
         case 'arrowleft':
@@ -470,7 +471,7 @@ function handle_keydown(event) {
             break;
         case 'd':
         case 'arrowright':
-            cursor_column = Math.min(game_field.size[1] - 1, cursor_column + step);
+            cursor_column = Math.min(game_field.Y - 1, cursor_column + step);
             break;
         case 'h':
             send_hint();
