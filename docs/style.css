@@ -192,7 +192,7 @@ body::before {
     position: absolute;
     width: 20px;
     height: 20px;
-    background-image: url("flag.png");
+    background-image: url("Image/flag.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -278,12 +278,16 @@ body::before {
 }
 
 h1 {
-    width: 20%;
-    margin-left: 40%;
-    color: black;
-    font-size: 28px;
+    text-align: center;
+    margin-top: 16px;
+    margin-bottom: 8px;
+}
+h1 img {
+    width: 400px;
+    height: auto;
+    display: inline-block;
+    max-width: 100%;
     cursor: pointer;
-    user-select: none;
 }
 
 .expand-button {
