@@ -15,6 +15,8 @@ let cursor_enabled = false;
 let cursor_row = 0;
 let cursor_column = 0;
 
+let is_solving = false;
+
 function start_game({X, Y, N} = {}) {
     const difficulty = localStorage.getItem('difficulty') || 'high';
     if (!X || !Y || !N) {
@@ -26,6 +28,7 @@ function start_game({X, Y, N} = {}) {
 
     first_step = true;
     game_over = false;
+    is_solving = false;
     clearInterval(timer_interval);
     start_time = null;
 
@@ -333,17 +336,21 @@ function solve() {
     update_solvability_information();
 }
 
-function solve_all() {
+async function solve_all() {
     if (!game_field.algorithm_enabled || game_over) {
         return;
     }
-
     if (first_step) {
         select_cell(Math.floor(Math.random() * game_field.X), Math.floor(Math.random() * game_field.Y));
         game_field.calculate_complete_module_collection();
         update_solvability_information();
     }
-    while (!game_over) {
+    if (is_solving) {
+        is_solving = false;
+        return;
+    }
+    is_solving = true;
+    while (!game_over && is_solving) {
         const selections = game_field.solver();
         if (selections.size === 0) {
             const safe_cells = [];
@@ -365,6 +372,7 @@ function solve_all() {
         }
         game_field.calculate_complete_module_collection();
         update_solvability_information();
+        await new Promise(resolve => setTimeout(resolve, 200));
     }
 }
 
