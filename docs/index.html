@@ -115,11 +115,6 @@
 <script src="script_classes.js"></script>
 <script src="script.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const savedCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-        if (savedCollapsed) document.body.classList.add('sidebar-collapsed');
-    });
-
     function toggle_sidebar() {
         document.body.classList.toggle('sidebar-collapsed');
         localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed').toString());
