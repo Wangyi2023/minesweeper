@@ -118,11 +118,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         const savedCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
         if (savedCollapsed) document.body.classList.add('sidebar-collapsed');
-
-        const savedBg = localStorage.getItem('background');
-        if (savedBg) {
-            document.documentElement.style.setProperty('--background-url', `url("Background_Collection/${savedBg}")`);
-        }
     });
 
     function toggle_sidebar() {
