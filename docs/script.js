@@ -21,11 +21,18 @@ let cursor_enabled = false;
 let cursor_row = 0;
 let cursor_column = 0;
 
+let queue = [];
+let game_id = 0;
+const delay = 0;
+
 
 // < Part 1 - Game Logic >
 
 // Todo 1.1 - Init
 function start_game({X, Y, N} = {}) {
+    game_id++;
+    queue.length = 0;
+
     if (!X || !Y || !N) {
         const params = get_difficulty_params(current_difficulty);
         X = params.size_x;
@@ -151,11 +158,27 @@ function select_cell(i, j) {
             return;
         }
     }
-    reveal_cell(i, j);
-    game_field.calculate_complete_module_collection();
-    update_solvability_information();
+    queue.push([i, j]);
+    if (queue.length === 1) {
+        process_queue(game_id);
+    }
+    // game_field.calculate_complete_module_collection();
+    // update_solvability_information();
 }
-function reveal_cell(i, j) {
+function process_queue(current_id) {
+    if (current_id !== game_id) return;
+    if (queue.length === 0) return;
+
+    const [x, y] = queue.shift();
+    reveal_cell(x, y, current_id);
+
+    if (queue.length > 0) {
+        setTimeout(() => process_queue(current_id), delay);
+    }
+}
+function reveal_cell(i, j, current_id) {
+    if (current_id !== game_id) return;
+
     if (game_over || !board[i][j].is_covered) return;
 
     if (first_step) {
@@ -185,8 +208,8 @@ function reveal_cell(i, j) {
     if (cell.number_of_surrounding_mines === 0) {
         for (let [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]]) {
             const [x, y] = [i + dx, j + dy]
-            if (x >= 0 && x < game_field.X && y >= 0 && y < game_field.Y) {
-                reveal_cell(x, y);
+            if (x >= 0 && x < game_field.X && y >= 0 && y < game_field.Y && game_field.board_covered[x][y]) {
+                queue.push([x, y])
             }
         }
     }
@@ -243,11 +266,11 @@ function solve() {
         }
         const random_index = Math.floor(Math.random() * safe_cells.length);
         const [i, j] = safe_cells[random_index];
-        reveal_cell(i, j);
+        select_cell(i, j);
     } else {
         for (const position_str of selections) {
             const position = Module.string_to_array(position_str);
-            reveal_cell(position[0], position[1]);
+            select_cell(position[0], position[1]);
         }
     }
     game_field.calculate_complete_module_collection();
@@ -286,11 +309,11 @@ async function solve_all() {
             }
             const random_index = Math.floor(Math.random() * safe_cells.length);
             const [i, j] = safe_cells[random_index];
-            reveal_cell(i, j);
+            select_cell(i, j);
         } else {
             for (const position_str of selections) {
                 const position = Module.string_to_array(position_str);
-                reveal_cell(position[0], position[1]);
+                select_cell(position[0], position[1]);
             }
         }
         game_field.calculate_complete_module_collection();
