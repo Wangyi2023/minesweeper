@@ -94,13 +94,12 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border: 2px solid rgba(255, 255, 255, 0.9);
     box-shadow:
-            0 0 5px 1px rgba(255, 255, 255, 0.8),
-            0 0 10px 2px rgba(255, 255, 255, 0.6),
-            0 0 15px 3px rgba(255, 255, 255, 0.4);
+            0 0 8px 2px rgba(255, 255, 255, 1),
+            0 0 12px 3px rgba(255, 255, 255, 0.6),
+            0 0 16px 4px rgba(255, 255, 255, 0.4);
     animation:
-            cursorPulse 1s infinite ease-in-out,
+            cursorPulse 1.5s infinite ease-in-out,
             cursorGlow 0.75s infinite alternate;
     pointer-events: none;
     z-index: 4;
@@ -148,8 +147,8 @@
     0% {
         box-shadow:
                 0 0 4px 1px rgba(255, 255, 255, 0.8),
-                0 0 8px 2px rgba(255, 255, 255, 0.4),
-                0 0 12px 3px rgba(255, 255, 255, 0.2);
+                0 0 8px 2px rgba(255, 255, 255, 0.6),
+                0 0 12px 3px rgba(255, 255, 255, 0.4);
     }
     100% {
         box-shadow:
