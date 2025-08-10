@@ -346,19 +346,14 @@ function create_board() {
     }
 }
 // Todo 2.2 - Edit Game Status
-function change_difficulty(difficulty) {
+function select_difficulty(difficulty) {
     current_difficulty = difficulty;
     start_game();
-}
-function select_difficulty(level) {
-    change_difficulty(level);
-    document.getElementById('difficulty-menu').style.display = 'none';
-    document.getElementById('difficulty-btn').classList.remove('selected');
+    close_difficulty_menu();
 }
 function select_background(filename) {
     document.documentElement.style.setProperty('--background-url', `url("Background_Collection/${filename}")`);
-    document.getElementById('background-menu').style.display = 'none';
-    document.getElementById('background-btn').classList.remove('selected');
+    close_background_menu();
 }
 // Todo 2.3 - Update Game Information
 function start_timer() {
@@ -388,28 +383,6 @@ function update_solvability_information() {
     document.getElementById('solvability-info').textContent = solvable ? 'true' : 'false';
 }
 // Todo 2.4 - Message / Shortcuts
-function show_end_message(completed) {
-    const content = document.getElementById('end-message-content');
-
-    content.innerHTML = '';
-
-    const title = document.createElement('h2');
-    title.style.textAlign = 'center';
-    title.style.marginBottom = '-5px';
-    title.textContent = completed ? 'Congratulations' : 'Failed';
-
-    const message = document.createElement('p');
-    message.style.textAlign = 'center';
-    message.style.fontSize = '16px';
-    message.innerHTML = completed
-        ? "You've successfully completed the Minesweeper game.<br> Click anywhere to close this message."
-        : "You triggered a mine.<br> Click anywhere to close this message.";
-
-    content.appendChild(title);
-    content.appendChild(message);
-
-    document.getElementById('end-message-modal').style.display = 'block';
-}
 function send_notice(type, timeout = 4500) {
     const now = Date.now();
     if (now - last_notice_time < 600) { return; }
@@ -459,8 +432,8 @@ function handle_keydown(event) {
     const key = event.key.toLowerCase();
     if (key === 'escape') {
         hide_guide();
-        document.getElementById('difficulty-menu').style.display = 'none';
-        document.getElementById('background-menu').style.display = 'none';
+        close_difficulty_menu();
+        close_background_menu();
         return;
     }
 
@@ -472,6 +445,11 @@ function handle_keydown(event) {
     if (key === 'f') {
         cursor_enabled = !cursor_enabled;
         updateCursor();
+        return;
+    }
+
+    if (key === 'r') {
+        start_game();
         return;
     }
 
@@ -507,9 +485,6 @@ function handle_keydown(event) {
         case '0':
             solve();
             break;
-        case 'r':
-            start_game();
-            break;
     }
 
     updateCursor();
@@ -519,8 +494,8 @@ function toggle_sidebar() {
     document.body.classList.toggle('sidebar-collapsed');
     localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed').toString());
 
-    document.getElementById('difficulty-menu').style.display = 'none';
-    document.getElementById('background-menu').style.display = 'none';
+    close_difficulty_menu();
+    close_background_menu();
 }
 function toggle_information() {
     const info_list = document.getElementById('information-list');
@@ -534,33 +509,27 @@ function toggle_information() {
 }
 function toggle_difficulty_dropdown() {
     const menu = document.getElementById('difficulty-menu');
-    if (menu.style.display === 'block') {
-        menu.style.display = 'none';
-        document.getElementById('difficulty-btn').classList.remove('selected');
+    if (document.getElementById('difficulty-menu').style.display === 'none') {
+        open_difficulty_menu();
     } else {
-        menu.style.display ='block';
-        document.getElementById('difficulty-btn').classList.add('selected');
+        close_difficulty_menu();
     }
-    document.getElementById('background-menu').style.display = 'none';
-    document.getElementById('background-btn').classList.remove('selected');
+    close_background_menu();
 }
 function toggle_background_dropdown() {
-    const menu = document.getElementById('background-menu');
-    if (menu.style.display === 'block') {
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-        document.getElementById('background-btn').classList.remove('selected');
+    if (document.getElementById('background-menu').style.display === 'none') {
+        open_background_menu();
     } else {
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-        document.getElementById('background-btn').classList.add('selected');
+        close_background_menu();
     }
-    document.getElementById('difficulty-menu').style.display = 'none';
-    document.getElementById('difficulty-btn').classList.remove('selected');
+    close_difficulty_menu();
 }
 function toggle_guide() {
     document.getElementById('guide-modal').style.display = 'block';
 }
 function hide_guide() {
     document.getElementById('guide-modal').style.display = 'none';
+    document.getElementById('guide-btn').classList.remove('selected');
 }
 function close_guide(event) {
     const modal = document.getElementById('guide-modal');
@@ -569,6 +538,22 @@ function close_guide(event) {
     if (!content.contains(event.target)) {
         hide_guide();
     }
+}
+function open_difficulty_menu() {
+    document.getElementById('difficulty-menu').style.display = 'block';
+    document.getElementById('difficulty-btn').classList.add('selected');
+}
+function open_background_menu() {
+    document.getElementById('background-menu').style.display = 'block';
+    document.getElementById('background-btn').classList.add('selected');
+}
+function close_difficulty_menu() {
+    document.getElementById('difficulty-menu').style.display = 'none';
+    document.getElementById('difficulty-btn').classList.remove('selected');
+}
+function close_background_menu() {
+    document.getElementById('background-menu').style.display = 'none';
+    document.getElementById('background-btn').classList.remove('selected');
 }
 // Todo 2.6 - Cursor
 function updateCursor() {
