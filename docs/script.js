@@ -50,10 +50,12 @@ function start_game({X, Y, N} = {}) {
     update_solvability_information();
     create_board();
 
-    start_time = null;
+    start_time = null
     last_notice_time = 0;
-    clearInterval(timer_interval);
-    document.getElementById("status-info").textContent = "In Progress";
+    timer_interval = null;
+
+    document.getElementById("status-info").textContent = "Ready to start";
+    document.getElementById("time-info").textContent = "---";
     updateCursor();
 }
 function get_difficulty_params(difficulty) {
@@ -124,7 +126,9 @@ function select_cell(i, j) {
             select_cell(i, j);
             return;
         }
-        start_timer();
+        start_time = Date.now();
+        timer_interval = setInterval(update_timer, 100);
+        document.getElementById('status-info').textContent = 'In Progress';
         first_step = false;
     }
 
@@ -156,7 +160,9 @@ function reveal_cell(i, j) {
     if (game_over || !board[i][j].is_covered) return;
 
     if (first_step) {
-        start_timer();
+        start_time = Date.now();
+        timer_interval = setInterval(update_timer, 100);
+        document.getElementById('status-info').textContent = 'In Progress';
         first_step = false;
     }
 
@@ -293,6 +299,7 @@ async function solve_all() {
         await new Promise(resolve => setTimeout(resolve, 200));
     }
     document.getElementById('solve-all-btn').classList.remove('selected');
+    is_solving = false;
 }
 function auto_mark() {
     if (game_over) {
@@ -318,6 +325,12 @@ function auto_mark() {
 // < Part 2 - UI >
 
 // Todo 2.1 - Init
+function update_timer() {
+    if (start_time) {
+        const elapsed = (Date.now() - start_time) / 1000;
+        document.getElementById('time-info').textContent = `${elapsed.toFixed(1)} s`;
+    }
+}
 function create_board() {
     board = [];
     counter_revealed = 0;
@@ -370,12 +383,6 @@ function select_background(filename) {
     close_background_menu();
 }
 // Todo 2.3 - Update Game Information
-function start_timer() {
-    start_time = Date.now();
-
-    if (timer_interval) clearInterval(timer_interval);
-    timer_interval = setInterval(() => {update_game_information();}, 100);
-}
 function update_game_information() {
     const time = start_time ? ((Date.now() - start_time) / 1000).toFixed(1) : "0.0";
     document.getElementById('time-info').textContent = `${time} s`;
