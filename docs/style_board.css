@@ -25,9 +25,10 @@
 
 /* Part 5 - Cell */
 .cell {
-    background-color: rgba(0, 0, 0, 0.5);
-    width: 20px;
-    height: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
     cursor: pointer;
     font-family: 'Tahoma', 'Microsoft Sans Serif', 'Arial', sans-serif;
@@ -41,10 +42,8 @@
     position: relative;
     transition: none !important;
 }
-.cell.revealed {}
-.cell:not(.revealed) {
-    background-color: rgba(0, 0, 0, 0.75);
-    z-index: 2;
+.cell.revealed {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 .cell.mine {
     position: relative;
@@ -135,18 +134,12 @@
     }
 }
 
-@keyframes colorBlink {
-    0%, 100% { background-color: rgba(255, 0, 0, 1); }
-    50% { background-color: rgba(255, 0, 0, 0.4); }
-}
 
 @keyframes cursorPulse {
     0%, 100% {
-        transform: scale(1);
         opacity: 0.9;
     }
     50% {
-        transform: scale(1.05);
         opacity: 1;
     }
 }
@@ -154,15 +147,15 @@
 @keyframes cursorGlow {
     0% {
         box-shadow:
-                0 0 5px 1px rgba(255, 255, 255, 0.8),
-                0 0 10px 2px rgba(255, 255, 255, 0.6),
-                0 0 15px 3px rgba(255, 255, 255, 0.4);
+                0 0 4px 1px rgba(255, 255, 255, 0.8),
+                0 0 8px 2px rgba(255, 255, 255, 0.4),
+                0 0 12px 3px rgba(255, 255, 255, 0.2);
     }
     100% {
         box-shadow:
-                0 0 8px 2px rgba(255, 255, 255, 0.9),
-                0 0 16px 4px rgba(255, 255, 255, 0.7),
-                0 0 24px 6px rgba(255, 255, 255, 0.5);
+                0 0 5px 2px rgba(255, 255, 255, 0.8),
+                0 0 10px 4px rgba(255, 255, 255, 0.6),
+                0 0 12px 6px rgba(255, 255, 255, 0.4);
     }
 }
 
