@@ -161,7 +161,9 @@ function reveal_cell(i, j) {
     }
 
     const cell = board[i][j];
-
+    if (cell.is_marked) {
+        mark_cell(i, j);
+    }
     cell.is_covered = false;
     cell.element.classList.add("revealed");
     if (cell.is_marked) {
