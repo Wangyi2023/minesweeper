@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <title>Minesweeper</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style_ui.css" />
+    <link rel="stylesheet" href="style_board.css" />
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 
@@ -18,78 +19,90 @@
         </div>
 
         <div class="controls">
-            <div class="sidebar-button info-box">
-                <div class="info-title">Information</div>
-                <div class="info-line">
-                    <span class="info-label">Status</span>
-                    <span id="status-info" class="info-value">In Progress</span>
-                </div>
-                <div class="info-line">
-                    <span class="info-label">Time</span>
-                    <span id="time-info" class="info-value">0.0 s</span>
-                </div>
-                <div class="info-line">
-                    <span class="info-label">Size</span>
-                    <span id="board-info" class="info-value">16 × 30 / Mines 99</span>
-                </div>
-                <div class="info-line">
-                    <span class="info-label">Marks</span>
-                    <span id="marks-info" class="info-value">0</span>
-                </div>
-                <div class="info-line">
-                    <span class="info-label">Density</span>
-                    <span id="density-info" class="info-value">20.63%</span>
-                </div>
-                <div class="info-line">
-                    <span class="info-label">Solvability</span>
-                    <span id="solvability-info" class="info-value">false</span>
+            <div class="sidebar-button">
+                <div id="information-btn" class="button selected" onclick="toggle_information()">Information</div>
+                <div id="information-list" class="sidebar-button info-list" style="display: block">
+                    <div class="info-line">
+                        <span class="info-label">Status</span>
+                        <span id="status-info" class="info-value">In Progress</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">Time</span>
+                        <span id="time-info" class="info-value">0.0 s</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">Size</span>
+                        <span id="board-info" class="info-value">16 × 30 / Mines 99</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">Marks</span>
+                        <span id="marks-info" class="info-value">0</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">Density</span>
+                        <span id="density-info" class="info-value">20.63%</span>
+                    </div>
+                    <div class="info-line">
+                        <span class="info-label">Solvability</span>
+                        <span id="solvability-info" class="info-value">false</span>
+                    </div>
                 </div>
             </div>
 
             <div class="sidebar-button">
-                <button class="button" onclick="start_game()">Restart</button>
+                <div id="start-btn" class="button" onclick="start_game()">Restart</div>
             </div>
 
             <div class="sidebar-button">
-                <button class="button" onclick="send_hint()">Hint</button>
+                <div id="hint-btn" class="button" onclick="send_hint()">Hint</div>
             </div>
 
             <div class="sidebar-button">
-                <button class="button" onclick="auto_mark()">Auto Mark</button>
+                <div id="mark-btn" class="button" onclick="auto_mark()">Auto Mark</div>
             </div>
 
             <div class="sidebar-button dropdown">
-                <button class="button" onclick="toggle_difficulty_dropdown()">Difficulty</button>
-                <div id="difficulty-menu" class="dropdown-menu">
-                    <div onclick="select_difficulty('low')">Low</div>
-                    <div onclick="select_difficulty('medium')">Medium</div>
-                    <div onclick="select_difficulty('high')">High</div>
-                    <div onclick="select_difficulty('fullscreen')">Fullscreen</div>
+                <div id="difficulty-btn" class="button" onclick="toggle_difficulty_dropdown()">Difficulty</div>
+                <div id="difficulty-menu" class="dropdown-menu" style="display: none">
+                    <div class="option-row">
+                        <div class="option" onclick="select_difficulty('low')">Low</div>
+                        <div class="option" onclick="select_difficulty('medium')">Medium</div>
+                    </div>
+                    <div class="option-row">
+                        <div class="option" onclick="select_difficulty('high')">High</div>
+                        <div class="option" onclick="select_difficulty('fullscreen')">Fullscreen</div>
+                    </div>
                 </div>
             </div>
 
             <div class="sidebar-button dropdown">
-                <button class="button" onclick="toggle_background_dropdown()">Background</button>
-                <div id="background-menu" class="dropdown-menu">
-                    <div onclick="select_background('background_default.jpg')">Default</div>
-                    <div onclick="select_background('01.jpg')">01</div>
-                    <div onclick="select_background('02.jpg')">02</div>
-                    <div onclick="select_background('03.jpg')">03</div>
-                    <div onclick="select_background('04.jpg')">04</div>
-                    <div onclick="select_background('05.jpg')">05</div>
+                <div id="background-btn" class="button" onclick="toggle_background_dropdown()">Background</div>
+                <div id="background-menu" class="dropdown-menu" style="display: none">
+                    <div class="option-row" >
+                        <div class="option" onclick="select_background('default.jpg')">Default</div>
+                        <div class="option" onclick="select_background('01.jpg')">01</div>
+                    </div>
+                    <div class="option-row" >
+                        <div class="option" onclick="select_background('02.jpg')">02</div>
+                        <div class="option" onclick="select_background('03.jpg')">03</div>
+                    </div>
+                    <div class="option-row" >
+                        <div class="option" onclick="select_background('04.jpg')">04</div>
+                        <div class="option" onclick="select_background('05.jpg')">05</div>
+                    </div>
                 </div>
             </div>
 
             <div class="sidebar-button">
-                <button class="button" onclick="solve()">Solve</button>
+                <div id="solve-btn" class="button" onclick="solve()">Solve</div>
             </div>
 
             <div class="sidebar-button">
-                <button class="button" onclick="solve_all()">Solve All</button>
+                <div id="solve-all-btn" class="button" onclick="solve_all()">Solve All</div>
             </div>
 
             <div class="sidebar-button">
-                <button class="button" onclick="toggle_guide()">Guide</button>
+                <div id="guide-btn" class="button" onclick="toggle_guide()">Guide</div>
             </div>
 
         </div>
@@ -114,53 +127,6 @@
 <!-- Script - Part 1 -->
 <script src="script_classes.js"></script>
 <script src="script.js"></script>
-<script>
-    function toggle_sidebar() {
-        document.body.classList.toggle('sidebar-collapsed');
-        localStorage.setItem('sidebarCollapsed', document.body.classList.contains('sidebar-collapsed').toString());
-
-        document.getElementById('difficulty-menu').style.display = 'none';
-        document.getElementById('background-menu').style.display = 'none';
-    }
-
-    function toggle_difficulty_dropdown() {
-        const menu = document.getElementById('difficulty-menu');
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-        document.getElementById('background-menu').style.display = 'none';
-    }
-
-    function toggle_background_dropdown() {
-        const menu = document.getElementById('background-menu');
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-        document.getElementById('difficulty-menu').style.display = 'none';
-    }
-
-
-
-
-    function toggle_guide() {
-        document.getElementById('guide-modal').style.display = 'block';
-    }
-
-    function hide_guide() {
-        document.getElementById('guide-modal').style.display = 'none';
-    }
-
-    function close_guide(event) {
-        const modal = document.getElementById('guide-modal');
-        const content = modal.querySelector('.modal-content');
-
-        if (!content.contains(event.target)) {
-            hide_guide();
-        }
-    }
-
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            hide_guide();
-        }
-    });
-</script>
 
 <!-- Modal -->
 <div id="guide-modal" class="modal" onclick="close_guide(event)">
@@ -198,13 +164,7 @@
     </div>
 </div>
 
-<div id="end-message-modal" class="modal-end" onclick="hide_end_message()">
-    <div class="modal-container" onclick="hide_end_message()">
-        <div class="modal-content-end">
-            <div id="end-message-content"></div>
-        </div>
-    </div>
-</div>
+<div id="notice-container" class="notice-container"></div>
 
 </body>
 </html>

@@ -1,0 +1,176 @@
+/* Part 4 - Board */
+.board-wrapper {
+    position: relative;
+    display: inline-block;
+    padding: 2px;
+}
+.board-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    pointer-events: none;
+    z-index: 10;
+
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+#board {
+    display: grid;
+    background: transparent;
+}
+
+
+/* Part 5 - Cell */
+.cell {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 20px;
+    height: 20px;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-family: 'Tahoma', 'Microsoft Sans Serif', 'Arial', sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    position: relative;
+    transition: none !important;
+}
+.cell.revealed {}
+.cell:not(.revealed) {
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 2;
+}
+.cell.mine {
+    position: relative;
+    background-color: rgba(255, 0, 0, 0.2);
+}
+.cell.mine::before {
+    content: "";
+    position: absolute;
+    background-color: rgba(255, 0, 0, 0.9);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255, 0, 0, 0.9);
+    box-shadow:
+            0 0 5px 1px rgba(255, 0, 0, 0.8),
+            0 0 10px 2px rgba(255, 0, 0, 0.6),
+            0 0 15px 3px rgba(255, 0, 0, 0.4);
+    animation:
+            cursorPulseRed 1s infinite ease-in-out,
+            cursorGlowRed 0.5s infinite alternate;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.cell.marked {
+    position: relative;
+}
+.cell.marked::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-image: url("Image/flag.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.cell.cursor {
+    position: relative;
+    z-index: 20;
+}
+.cell.cursor:not(.mine)::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow:
+            0 0 5px 1px rgba(255, 255, 255, 0.8),
+            0 0 10px 2px rgba(255, 255, 255, 0.6),
+            0 0 15px 3px rgba(255, 255, 255, 0.4);
+    animation:
+            cursorPulse 1s infinite ease-in-out,
+            cursorGlow 0.75s infinite alternate;
+    pointer-events: none;
+    z-index: 4;
+}
+
+
+/* Part 6 - Frames */
+@keyframes cursorPulseRed {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+}
+
+@keyframes cursorGlowRed {
+    0% {
+        box-shadow:
+                0 0 5px 1px rgba(255, 0, 0, 0.8),
+                0 0 10px 2px rgba(255, 0, 0, 0.6),
+                0 0 15px 3px rgba(255, 0, 0, 0.4);
+    }
+    100% {
+        box-shadow:
+                0 0 8px 2px rgba(255, 0, 0, 0.9),
+                0 0 16px 4px rgba(255, 0, 0, 0.7),
+                0 0 24px 6px rgba(255, 0, 0, 0.5);
+    }
+}
+
+@keyframes colorBlink {
+    0%, 100% { background-color: rgba(255, 0, 0, 1); }
+    50% { background-color: rgba(255, 0, 0, 0.4); }
+}
+
+@keyframes cursorPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+}
+
+@keyframes cursorGlow {
+    0% {
+        box-shadow:
+                0 0 5px 1px rgba(255, 255, 255, 0.8),
+                0 0 10px 2px rgba(255, 255, 255, 0.6),
+                0 0 15px 3px rgba(255, 255, 255, 0.4);
+    }
+    100% {
+        box-shadow:
+                0 0 8px 2px rgba(255, 255, 255, 0.9),
+                0 0 16px 4px rgba(255, 255, 255, 0.7),
+                0 0 24px 6px rgba(255, 255, 255, 0.5);
+    }
+}
+
+@keyframes progressShrink {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0;
+    }
+}
