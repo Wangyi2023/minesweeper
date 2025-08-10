@@ -214,6 +214,7 @@ function mark_cell(i, j) {
 }
 // Todo 1.3 - Algorithm for UI
 function solve() {
+    is_solving = false;
     if (game_over) {
         return;
     }
@@ -221,7 +222,6 @@ function solve() {
         send_notice('n_enabled')
         return;
     }
-
     if (first_step) {
         select_cell(Math.floor(Math.random() * game_field.X), Math.floor(Math.random() * game_field.Y));
         game_field.calculate_complete_module_collection();
@@ -257,8 +257,10 @@ async function solve_all() {
     }
     if (!game_field.algorithm_enabled) {
         send_notice('n_enabled');
+        document.getElementById('solve-all-btn').classList.remove('selected');
         return;
     }
+    document.getElementById('solve-all-btn').classList.add('selected');
     if (first_step) {
         select_cell(Math.floor(Math.random() * game_field.X), Math.floor(Math.random() * game_field.Y));
         game_field.calculate_complete_module_collection();
@@ -293,6 +295,7 @@ async function solve_all() {
         update_solvability_information();
         await new Promise(resolve => setTimeout(resolve, 200));
     }
+    document.getElementById('solve-all-btn').classList.remove('selected');
 }
 function auto_mark() {
     if (game_over) {
