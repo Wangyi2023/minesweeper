@@ -22,7 +22,6 @@ let cursor_row = 0;
 let cursor_column = 0;
 
 
-
 // < Part 1 - Game Logic >
 
 // Todo 1.1 - Init
