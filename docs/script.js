@@ -212,7 +212,11 @@ function mark_cell(i, j) {
 }
 // Todo 1.3 - Algorithm for UI
 function solve() {
-    if (!game_field.algorithm_enabled || game_over) {
+    if (game_over) {
+        return;
+    }
+    if (!game_field.algorithm_enabled) {
+        send_notice('n_enabled')
         return;
     }
 
@@ -246,7 +250,11 @@ function solve() {
     update_solvability_information();
 }
 async function solve_all() {
-    if (!game_field.algorithm_enabled || game_over) {
+    if (game_over) {
+        return;
+    }
+    if (!game_field.algorithm_enabled) {
+        send_notice('n_enabled');
         return;
     }
     if (first_step) {
@@ -285,7 +293,11 @@ async function solve_all() {
     }
 }
 function auto_mark() {
+    if (game_over) {
+        return;
+    }
     if (!game_field.algorithm_enabled) {
+        send_notice('n_enabled')
         return;
     }
     for (let module of game_field.complete_module_collection) {
@@ -403,6 +415,10 @@ function send_notice(type, timeout = 4500) {
         case 'failed':
             notice_text.innerHTML = "Failed.<br> You triggered a mine.";
             notice_progress.style.backgroundColor = 'rgba(255, 20, 53, 1)';
+            break;
+        case 'n_enabled':
+            notice_text.innerHTML = "Error.<br> Algorithm was not activated.";
+            notice_progress.style.backgroundColor = 'rgba(255, 100, 0, 1)';
             break;
         default:
             notice_text.innerHTML = "Notice.<br> Default Notice Content - 1024 0010 0024.";
@@ -566,7 +582,11 @@ function updateCursor() {
     }
 }
 function send_hint() {
-    if (!game_field.algorithm_enabled || game_over) {
+    if (game_over) {
+        return;
+    }
+    if (!game_field.algorithm_enabled) {
+        send_notice('n_enabled');
         return;
     }
 
