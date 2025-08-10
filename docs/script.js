@@ -178,13 +178,10 @@ function reveal_cell(i, j) {
     counter_revealed++;
 
     if (cell.number_of_surrounding_mines === 0) {
-        for (let delta_i of [-1, 0, 1]) {
-            for (let delta_j of [-1, 0, 1]) {
-                const row = i + delta_i;
-                const column = j + delta_j;
-                if (row >= 0 && row < game_field.X && column >= 0 && column < game_field.Y) {
-                    reveal_cell(row, column);
-                }
+        for (let [dx, dy] of [[-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [-1, 1], [1, -1], [1, 1]]) {
+            const [x, y] = [i + dx, j + dy]
+            if (x >= 0 && x < game_field.X && y >= 0 && y < game_field.Y) {
+                reveal_cell(x, y);
             }
         }
     }
@@ -500,7 +497,7 @@ function handle_keydown(event) {
         case 'm':
             mark_cell(cursor_row, cursor_column);
             break;
-        case 'n':
+        case '':
             select_cell(cursor_row, cursor_column);
             break;
         case '0':
@@ -529,7 +526,6 @@ function toggle_information() {
     }
 }
 function toggle_difficulty_dropdown() {
-    const menu = document.getElementById('difficulty-menu');
     if (document.getElementById('difficulty-menu').style.display === 'none') {
         open_difficulty_menu();
     } else {
