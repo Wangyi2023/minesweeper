@@ -3,6 +3,7 @@
 // < Part 0 - Define Global-Variables >
 
 let current_difficulty = 'high';
+let cell_size = 24;
 
 let first_step = true;
 let game_over = false;
@@ -62,6 +63,7 @@ function start_game({X, Y, N} = {}) {
 
     document.getElementById("status-info").textContent = "Ready to start";
     document.getElementById("time-info").textContent = "---";
+    render_border();
     updateCursor();
 }
 function get_difficulty_params(difficulty) {
@@ -347,6 +349,34 @@ function auto_mark() {
 // < Part 2 - UI >
 
 // Todo 2.1 - Init
+function render_border() {
+    const boardWrapper = document.getElementById('board-wrapper');
+
+    document.querySelectorAll('.game-field-border, .game-field-border-outline').forEach(e => e.remove());
+
+    const BORDER_OFFSET = 1;
+    const BORDER_OFFSET_OUTLINE = 3;
+
+    const boardWidthPx = game_field.Y * cell_size;
+    const boardHeightPx = game_field.X * cell_size;
+
+    const border = document.createElement('div');
+    border.classList.add('game-field-border');
+    border.style.width = `${boardWidthPx + 2 * BORDER_OFFSET}px`;
+    border.style.height = `${boardHeightPx + 2 * BORDER_OFFSET}px`;
+    border.style.left = `${-BORDER_OFFSET}px`;
+    border.style.top = `${-BORDER_OFFSET}px`;
+
+    const border_outline = document.createElement('div');
+    border_outline.classList.add('game-field-border-outline');
+    border_outline.style.width = `${boardWidthPx + 2 * BORDER_OFFSET_OUTLINE}px`;
+    border_outline.style.height = `${boardHeightPx + 2 * BORDER_OFFSET_OUTLINE}px`;
+    border_outline.style.left = `${-BORDER_OFFSET_OUTLINE}px`;
+    border_outline.style.top = `${-BORDER_OFFSET_OUTLINE}px`;
+
+    boardWrapper.appendChild(border);
+    boardWrapper.appendChild(border_outline);
+}
 function update_timer() {
     if (start_time) {
         const elapsed = (Date.now() - start_time) / 1000;
@@ -357,8 +387,8 @@ function create_board() {
     board = [];
     counter_revealed = 0;
     const board_element = document.getElementById("board");
-    board_element.style.gridTemplateRows = `repeat(${game_field.X}, 20px)`;
-    board_element.style.gridTemplateColumns = `repeat(${game_field.Y}, 20px)`;
+    board_element.style.gridTemplateRows = `repeat(${game_field.X}, ${cell_size}px)`;
+    board_element.style.gridTemplateColumns = `repeat(${game_field.Y}, ${cell_size}px)`;
     board_element.innerHTML = "";
 
     for (let i = 0; i < game_field.X; i++) {
