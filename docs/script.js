@@ -163,8 +163,6 @@ function select_cell(i, j) {
     if (queue.length === 1) {
         process_queue(game_id);
     }
-    // game_field.calculate_complete_module_collection();
-    // update_solvability_information();
 }
 function process_queue(current_id) {
     if (current_id !== game_id) return;
@@ -172,6 +170,8 @@ function process_queue(current_id) {
 
     const [x, y] = queue.shift();
     reveal_cell(x, y, current_id);
+    game_field.calculate_complete_module_collection();
+    update_solvability_information();
 
     if (queue.length > 0) {
         setTimeout(() => process_queue(current_id), delay);
@@ -555,7 +555,7 @@ function handle_keydown(event) {
         case 'm':
             mark_cell(cursor_row, cursor_column);
             break;
-        case '':
+        case ' ':
             select_cell(cursor_row, cursor_column);
             break;
         case '0':
