@@ -75,9 +75,8 @@ function get_difficulty_params(difficulty) {
         case 'high':
             return { size_x: 16, size_y: 30, number_of_mines: 99 };
         case 'fullscreen':
-            const cell_size = 22;
-            const X = Math.floor((window.innerHeight - 100) / cell_size);
-            const Y = Math.floor(window.innerWidth / cell_size);
+            const X = Math.floor((window.innerHeight - 100) / (cell_size + 2));
+            const Y = Math.floor((window.innerWidth - 20) / (cell_size + 2));
             const N = Math.floor( X * Y * 0.20625);
             return { size_x: X, size_y: Y, number_of_mines: N };
         default:
